@@ -17,13 +17,13 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building Spring Boot application for ${env.STUDENT_NAME}..."
-                bat "gradle bootJar --no-daemon"
+                bat "gradlew.bat bootJar --no-daemon"
             }
         }
         stage("Test") {
             steps {
                 echo "Running automated tests for ${env.STUDENT_NAME}..."
-                bat "gradle test --no-daemon"
+                bat "gradlew.bat test --no-daemon"
             }
         }
         stage("Docker Build") {
