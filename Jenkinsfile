@@ -1,47 +1,47 @@
 pipeline {
     agent any
     environment {
-        IMAGE_NAME = 'tleubek-ersin-student-api:v1.0-tleubek-ersin'
-        STUDENT_NAME = 'Yersin Tleubek'
+        IMAGE_NAME = "tleubek-ersin-student-api:v1.0-tleubek-ersin"
+        STUDENT_NAME = "Yersin Tleubek"
     }
     stages {
-        stage('Checkout') {
+        stage("Checkout") {
             steps {
                 echo "=========================================="
-                echo "Pipeline execution for: \"
+                echo "Pipeline execution for: ${env.STUDENT_NAME}"
                 echo "Checking out source code from GitHub..."
                 echo "=========================================="
                 checkout scm
             }
         }
-        stage('Build') {
+        stage("Build") {
             steps {
-                echo "Building Spring Boot application for \..."
-                bat 'gradle bootJar --no-daemon'
+                echo "Building Spring Boot application for ${env.STUDENT_NAME}..."
+                bat "gradle bootJar --no-daemon"
             }
         }
-        stage('Test') {
+        stage("Test") {
             steps {
-                echo "Running automated tests for \..."
-                bat 'gradle test --no-daemon'
+                echo "Running automated tests for ${env.STUDENT_NAME}..."
+                bat "gradle test --no-daemon"
             }
         }
-        stage('Docker Build') {
+        stage("Docker Build") {
             steps {
-                echo "Building Docker image: \..."
-                bat "docker build -t \ ."
+                echo "Building Docker image: ${env.IMAGE_NAME}..."
+                bat "docker build -t ${env.IMAGE_NAME} ."
             }
         }
-        stage('Verify') {
+        stage("Verify") {
             steps {
-                echo "Verifying Docker image existence for \..."
-                bat "docker images \"
+                echo "Verifying Docker image existence for ${env.STUDENT_NAME}..."
+                bat "docker images ${env.IMAGE_NAME}"
             }
         }
     }
     post {
         always {
-            echo "Pipeline finished for student: \"
+            echo "Pipeline finished for student: ${env.STUDENT_NAME}"
         }
         success {
             echo "CI/CD Pipeline successfully executed all 5 stages!"
