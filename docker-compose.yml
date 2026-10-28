@@ -1,0 +1,43 @@
+name: tleubek-ersin-student-api
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: tleubek-ersin-postgres
+    environment:
+      POSTGRES_DB: student_db
+      POSTGRES_USER: tleubek_user
+      POSTGRES_PASSWORD: tleubek_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tleubek-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tleubek_user -d student_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  student-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tleubek-ersin-student-api:v1.1-tleubek-ersin
+    container_name: tleubek-ersin-app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/student_db
+      SPRING_DATASOURCE_USERNAME: tleubek_user
+      SPRING_DATASOURCE_PASSWORD: tleubek_password
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - tleubek-net
+volumes:
+  postgres_data:
+    name: tleubek_postgres_data
+networks:
+  tleubek-net:
+    name: tleubek_network
