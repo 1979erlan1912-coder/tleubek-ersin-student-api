@@ -14,22 +14,15 @@ pipeline {
                 checkout scm
             }
         }
-        stage("Build") {
+        stage("Build & Test") {
             steps {
-                echo "Building Spring Boot application for ${env.STUDENT_NAME}..."
-                bat "gradlew.bat bootJar --no-daemon"
-            }
-        }
-        stage("Test") {
-            steps {
-                echo "Running automated tests for ${env.STUDENT_NAME}..."
-                bat "gradlew.bat test --no-daemon"
+                echo "Building application and running tests via Docker..."
+                bat "docker build -t ${env.IMAGE_NAME} ."
             }
         }
         stage("Docker Build") {
             steps {
-                echo "Building Docker image: ${env.IMAGE_NAME}..."
-                bat "docker build -t ${env.IMAGE_NAME} ."
+                echo "Personalized Docker image built successfully: ${env.IMAGE_NAME}"
             }
         }
         stage("Verify") {
